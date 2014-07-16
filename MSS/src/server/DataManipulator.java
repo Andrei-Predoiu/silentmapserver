@@ -27,7 +27,7 @@ public class DataManipulator {
 
 			while (rs.next()) {
 
-				Area temp = new Area(rs.getInt(1), rs.getDouble(2),
+				Area temp = new Area(rs.getString(1), rs.getDouble(2),
 						rs.getDouble(3), rs.getInt(4), new Settings(
 								rs.getBoolean(5), rs.getBoolean(6)));
 

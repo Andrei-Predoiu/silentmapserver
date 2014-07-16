@@ -1,28 +1,28 @@
 package server.model;
 
 public class Area {
-	private int id;
+	private String hash;
 	private double latitude;
 	private double longitude;
 	private int radius;
 	private Settings settings;
 
-	public Area(int id, double latitude, double longitude, int radius,
+	public Area(String hash, double latitude, double longitude, int radius,
 			Settings settings) {
 		super();
-		this.id = id;
+		this.hash = hash;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.radius = radius;
 		this.settings = settings;
 	}
 
-	public int getId() {
-		return id;
+	public String getHash() {
+		return hash;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 
 	public double getLatitude() {
