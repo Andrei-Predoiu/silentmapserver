@@ -1,7 +1,7 @@
 [
 	<#list areas as c>
 		<#if c_index != 0>,</#if>{       
-		"id": "${c.getId()}",
+		"hash": "${c.getcircle_hash()}",
 		"latitude": "${c.getLatitude()}",
 		"longitude": "${c.getLongitude()}",
 		"radius": "${c.getRadius()}",

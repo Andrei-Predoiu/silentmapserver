@@ -1,11 +1,22 @@
 package server.model;
 
 public class Auth {
+	private String username;
+	private String password;
 	private String hash;
+	private String salt;
 
-	public Auth(String hash) {
-		super();
-		this.hash = hash;
+	public Auth(String username, String password) {
+
+		this.username = username;
+		this.password = password;
+	}
+
+	public Auth(String username, String salt, String hash) {
+
+		this.username = username;
+		this.password = password;
+		this.salt = salt;
 	}
 
 	public String getHash() {
@@ -14,6 +25,30 @@ public class Auth {
 
 	public void setHash(String hash) {
 		this.hash = hash;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

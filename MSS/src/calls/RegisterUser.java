@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import server.DataManipulator;
+import server.FreemarkerConfig;
 import server.model.Auth;
 
 import com.google.gson.Gson;
@@ -30,8 +31,8 @@ public class RegisterUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	Gson gson = new GsonBuilder().create();
 
-	private Configuration cfg = new Configuration();
-	DataManipulator worker = new DataManipulator();
+	private Configuration cfg = FreemarkerConfig.getInstance();
+	DataManipulator worker = DataManipulator.getInstance();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -65,14 +66,13 @@ public class RegisterUser extends HttpServlet {
 			ServletContext sc = this.getServletContext();
 			System.out.println(sc.getRealPath(getServletName()));
 			String r = request.getParameter("report");
-			int i;
 			System.out.println(r);
 			Auth req = gson.fromJson(r, Auth.class);
 			r = gson.toJson(req);
 			System.out.println(req.getHash());
 
-			if (!worker.userExsists(req.getHash())) {
-				worker.newUser(req.getHash());
+			if (!worker.userExsists(req.getUsername(), req.getPassword())) {
+				worker.newUser(req.getUsername(), req.getPassword());
 				root.put("message", "ok");
 			} else {
 				root.put("message", "Exists!");

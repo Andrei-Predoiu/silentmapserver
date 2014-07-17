@@ -9,7 +9,7 @@ import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.Version;
 
 public class FreemarkerConfig {
-	private Configuration cfg;
+	private static Configuration cfg;
 
 	private FreemarkerConfig() {
 		cfg = new Configuration();
@@ -58,11 +58,11 @@ public class FreemarkerConfig {
 
 	}
 
-	private FreemarkerConfig instance = null;
+	private static FreemarkerConfig instance = null;
 
-	public Configuration getInstance() {
-		if (this.instance == null)
-			this.instance = new FreemarkerConfig();
-		return this.cfg;
+	public static Configuration getInstance() {
+		if (instance == null)
+			instance = new FreemarkerConfig();
+		return cfg;
 	}
 }

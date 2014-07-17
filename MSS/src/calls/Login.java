@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import server.DataManipulator;
 import server.FreemarkerConfig;
-import server.model.GeneralRequest;
+import server.model.Auth;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,8 +26,8 @@ import freemarker.template.TemplateException;
 /**
  * Servlet implementation class OrderServlet
  */
-@WebServlet(name = "SaveAreas", urlPatterns = { "/save" })
-public class SaveAreas extends HttpServlet {
+@WebServlet(urlPatterns = { "/login" })
+public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	Gson gson = new GsonBuilder().create();
 
@@ -37,7 +37,7 @@ public class SaveAreas extends HttpServlet {
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public SaveAreas() {
+	public Login() {
 		super();
 	}
 
@@ -59,7 +59,6 @@ public class SaveAreas extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text;charset=UTF-8");
 		PrintWriter writer = response.getWriter();
-
 		Map<String, String> root = new HashMap<String, String>();
 		root.put("message", "failed");
 		try {
@@ -68,26 +67,17 @@ public class SaveAreas extends HttpServlet {
 			System.out.println(sc.getRealPath(getServletName()));
 			String r = request.getParameter("report");
 			System.out.println(r);
-			GeneralRequest req = gson.fromJson(r, GeneralRequest.class);
-			System.out.println(gson.toJson(req));
+			Auth req = gson.fromJson(r, Auth.class);
+			r = gson.toJson(req);
+			System.out.println(req.getHash());
 
-			if (req.getData().getAction().equals("save")) {
-				if (worker.userExsists(req.getAuth().getUsername(), req
-						.getAuth().getPassword())) {
-					worker.newAreas(req.getAuth().getUsername(), req.getData()
-							.getAreas());
-					root.put("message", "saved");
-				}
-			} else if (req.getData().getAction().equals("delete")) {
-				if (worker.userExsists(req.getAuth().getUsername(), req
-						.getAuth().getPassword())) {
+			if (worker.userExsists(req.getUsername(), req.getPassword())) {
+				root.put("message", "Logged In!");
+			} else {
+				root.put("message", "Invalid Credentials!");
 
-					worker.deleteAreas(req.getAuth().getHash());
-					root.put("message", "deleted");
-				} else {
-					root.put("message", "wrong action");
-				}
 			}
+
 			/* Get the template */
 			Template temp = cfg.getTemplate("response.ftl");
 
