@@ -131,6 +131,8 @@ public class DataManipulator {
 	public void newAreas(String user, Area[] areas) {
 		int index = 0;
 		String query;
+		
+		//ToDo check if circles have hashes, update the ones that do and create a hash for ones that don't
 		try {
 			Connection con = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
