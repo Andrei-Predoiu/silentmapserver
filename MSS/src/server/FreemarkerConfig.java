@@ -22,7 +22,7 @@ public class FreemarkerConfig {
 		// plain directory for it, but non-file-system are possible too:
 		try {
 			cfg.setDirectoryForTemplateLoading(new File(
-					"D:/Apps/WorkSpace/MSS/WebContent/WEB-INF/templates"));
+					"D:/Work/git/server/MSS/WebContent/WEB-INF/templates"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

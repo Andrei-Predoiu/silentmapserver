@@ -2,6 +2,7 @@ package calls;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import server.DataManipulator;
 import server.FreemarkerConfig;
+import server.model.Area;
 import server.model.GeneralRequest;
+import server.model.SplitAreas;
+import server.security.Validation;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +36,8 @@ public class SaveAreas extends HttpServlet {
 	Gson gson = new GsonBuilder().create();
 
 	private Configuration cfg = FreemarkerConfig.getInstance();
-	DataManipulator worker = DataManipulator.getInstance();
+	private DataManipulator worker = DataManipulator.getInstance();
+	private Validation validator = Validation.getInstance();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -72,14 +77,23 @@ public class SaveAreas extends HttpServlet {
 			System.out.println(gson.toJson(req));
 
 			if (req.getData().getAction().equals("save")) {
-				if (worker.userExsists(req.getAuth().getUsername(), req
+				if (worker.verifyLogin(req.getAuth().getUsername(), req
 						.getAuth().getPassword())) {
-					worker.newAreas(req.getAuth().getUsername(), req.getData()
-							.getAreas());
+					ArrayList<Area> areas = validator.validateAreas(req
+							.getData().getAreas());
+					SplitAreas split = validator.splitAreas(req.getAuth()
+							.getUsername(), areas);
+
+					worker.newAreas(req.getAuth().getUsername(), split.newAreas);
+					worker.updateAreas(req.getAuth().getUsername(),
+							split.existingAreas);
+					areas = null;
+					split.existingAreas = null;
+					split.newAreas = null;
 					root.put("message", "saved");
 				}
 			} else if (req.getData().getAction().equals("delete")) {
-				if (worker.userExsists(req.getAuth().getUsername(), req
+				if (worker.verifyLogin(req.getAuth().getUsername(), req
 						.getAuth().getPassword())) {
 
 					worker.deleteAreas(req.getAuth().getHash());

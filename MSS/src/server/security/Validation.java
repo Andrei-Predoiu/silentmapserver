@@ -9,8 +9,21 @@ import server.model.Area;
 import server.model.SplitAreas;
 
 public class Validation {
-	private Encription enc = Encription.getInstance();
-	private DataManipulator dbh = DataManipulator.getInstance();
+	private static Encription enc = Encription.getInstance();
+	private static DataManipulator dbh = DataManipulator.getInstance();
+	private static Validation instance = null;
+
+	private Validation() {
+
+	}
+
+	public static Validation getInstance() {
+		if (instance == null) {
+			instance = new Validation();
+		}
+
+		return instance;
+	}
 
 	public synchronized ArrayList<Area> validateAreas(ArrayList<Area> areas) {
 		for (Area a : areas) {
@@ -25,9 +38,9 @@ public class Validation {
 		}
 		return areas;
 	}
-	
-	//Probably big performance drain below
-	public synchronized SplitAreas getExistingAreas(String username,
+
+	// Probably big performance drain below
+	public synchronized SplitAreas splitAreas(String username,
 			ArrayList<Area> areas) {
 		SplitAreas result = new SplitAreas();
 		ArrayList<Area> serverAreas = dbh.getAreas(username);

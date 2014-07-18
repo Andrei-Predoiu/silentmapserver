@@ -19,6 +19,7 @@ public class DataManipulator {
 	private static DataManipulator instance = null;
 	private SecureRandom sr;
 	private Encription enc = Encription.getInstance();
+	private final String databaseAdress = "jdbc:mysql://127.0.0.1:3306/mobile";
 
 	private DataManipulator() {
 		try {
@@ -43,8 +44,8 @@ public class DataManipulator {
 				+ username + "';";
 
 		try {
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 
@@ -73,8 +74,8 @@ public class DataManipulator {
 		String query = "SELECT username,salt,hash FROM users;";
 
 		try {
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 
@@ -95,7 +96,7 @@ public class DataManipulator {
 		return users;
 	}
 
-	public synchronized void newUser(String username, String password) {
+	public synchronized boolean newUser(String username, String password) {
 		byte[] salt = sr.generateSeed(32);
 		String hash;
 		try {
@@ -103,57 +104,59 @@ public class DataManipulator {
 		} catch (NoSuchAlgorithmException e) {
 			System.out.println("NoSuchAlgorithmException, action Aborted");
 			e.printStackTrace();
-			return;
+			return false;
 		} catch (IOException e) {
 			System.out.println("IOException, action Aborted");
 			e.printStackTrace();
-			return;
+			return false;
 		}
 		String query = "INSERT INTO users(username,salt,hash,) VALUES ('"
 				+ username + "')";
 		try {
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
 
 			System.out.println("Created new account:\nUsername: " + username
 					+ "\nSalt: " + salt + "\nHash: " + hash);
 
 			Statement stmt = con.createStatement();
-			stmt.executeUpdate(query);
+			if (stmt.executeUpdate(query) != 0)
+				return true;
 
 			con.close();
 
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		return false;
 	}
 
-	public synchronized void newAreas(String user, Area[] areas) {
+	public synchronized void newAreas(String user, ArrayList<Area> areas) {
 		int index = 0;
 		String query;
 
 		// ToDo check if circles have hashes, update the ones that do and create
 		// a hash for ones that don't
 		try {
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
 
 			Statement st = con.createStatement();
-			for (int i = index; i < areas.length; i++) {
+			for (int i = index; i < areas.size(); i++) {
 				query = "INSERT INTO areas(name, latitude, longitude, radius,circle_hash, silent, vibrate) VALUES ('"
 						+ user
 						+ "', "
-						+ areas[index].getLatitude()
+						+ areas.get(i).getLatitude()
 						+ ", "
-						+ areas[index].getLongitude()
+						+ areas.get(i).getLongitude()
 						+ ", "
-						+ areas[index].getRadius()
+						+ areas.get(i).getRadius()
 						+ ", "
-						+ areas[index].getCircle_hash()
+						+ areas.get(i).getCircle_hash()
 						+ ", "
-						+ areas[index].getSettings().isSilent()
+						+ areas.get(i).getSettings().isSilent()
 						+ ", "
-						+ areas[index].getSettings().isVibrate() + ")";
+						+ areas.get(i).getSettings().isVibrate() + ")";
 				st.executeUpdate(query);
 				index++;
 			}
@@ -162,24 +165,24 @@ public class DataManipulator {
 		}
 	}
 
-	public synchronized void updateAreas(String user, Area[] areas) {
+	public synchronized void updateAreas(String user, ArrayList<Area> areas) {
 		int index = 0;
 		String query;
 
 		// ToDo check if circles have hashes, update the ones that do and create
 		// a hash for ones that don't
 		try {
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
 
 			Statement st = con.createStatement();
-			for (int i = index; i < areas.length; i++) {
-				query = "UPDATE areas SET radius=" + areas[index].getRadius()
-						+ ", silent =" + areas[index].getSettings().isSilent()
+			for (int i = index; i < areas.size(); i++) {
+				query = "UPDATE areas SET radius=" + areas.get(i).getRadius()
+						+ ", silent =" + areas.get(i).getSettings().isSilent()
 						+ ", vibrate ="
-						+ areas[index].getSettings().isVibrate()
+						+ areas.get(i).getSettings().isVibrate()
 						+ " WHERE circle_hash ="
-						+ areas[index].getCircle_hash() + ";";
+						+ areas.get(i).getCircle_hash() + ";";
 				st.executeUpdate(query);
 				index++;
 			}
@@ -192,8 +195,8 @@ public class DataManipulator {
 		String query = "DELETE FROM areas WHERE user ='" + user + "'";
 
 		try {
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
 			Statement stmt = con.createStatement();
 			stmt.executeUpdate(query);
 
@@ -205,15 +208,15 @@ public class DataManipulator {
 		}
 	}
 
-	public synchronized boolean userExsists(String username, String password) {
+	public synchronized boolean verifyLogin(String username, String password) {
 		String hashGet = "SELECT hash,salt FROM users WHERE username ='"
 				+ username + "'";
 
 		String hash, salt;
 
 		try {
-			Connection con = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
 			Statement stmt = con.createStatement();
 			ResultSet val = stmt.executeQuery(hashGet);
 			String first, last;
@@ -255,6 +258,34 @@ public class DataManipulator {
 			System.out.println("IOException, userExsists aborted");
 			e.printStackTrace();
 			return false;
+		}
+		return false;
+
+	}
+
+	public synchronized boolean isUsernameUnique(String username) {
+		String countUsers = "SELECT COUNT(username) FROM users WHERE username ='"
+				+ username + "'";
+
+		try {
+			Connection con = DriverManager.getConnection(databaseAdress,
+					"root", "112");
+			Statement stmt = con.createStatement();
+			ResultSet val = stmt.executeQuery(countUsers);
+			if (val.absolute(1)) {
+				if (val.getInt(1) == 0) {
+					return true;
+				}
+			} else {
+				con.close();
+				return false;
+			}
+
+			con.close();
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return false;
 

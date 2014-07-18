@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Data {
 	private String action;
-	private Area[] areas;
+	private ArrayList<Area> areas;
 
 	public String getAction() {
 		return action;
@@ -14,11 +14,11 @@ public class Data {
 		this.action = action;
 	}
 
-	public Area[] getAreas() {
+	public ArrayList<Area> getAreas() {
 		return areas;
 	}
 
-	public void setAreas(Area[] areas) {
+	public void setAreas(ArrayList<Area> areas) {
 		this.areas = areas;
 	}
 }

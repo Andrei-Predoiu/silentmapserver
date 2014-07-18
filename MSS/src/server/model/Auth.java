@@ -12,7 +12,7 @@ public class Auth {
 		this.password = password;
 	}
 
-	public Auth(String username, String salt, String hash) {
+	public Auth(String username, String salt, String password) {
 
 		this.username = username;
 		this.password = password;

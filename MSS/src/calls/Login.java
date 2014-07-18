@@ -71,7 +71,7 @@ public class Login extends HttpServlet {
 			r = gson.toJson(req);
 			System.out.println(req.getHash());
 
-			if (worker.userExsists(req.getUsername(), req.getPassword())) {
+			if (worker.verifyLogin(req.getUsername(), req.getPassword())) {
 				root.put("message", "Logged In!");
 			} else {
 				root.put("message", "Invalid Credentials!");
@@ -85,7 +85,6 @@ public class Login extends HttpServlet {
 			try {
 				temp.process(root, writer);
 			} catch (TemplateException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} finally {
@@ -93,5 +92,4 @@ public class Login extends HttpServlet {
 		}
 
 	}
-	// TODO Auto-generated method stub
 }

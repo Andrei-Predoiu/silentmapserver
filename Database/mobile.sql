@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 16, 2014 at 12:50 PM
+-- Generation Time: Jul 18, 2014 at 09:32 PM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `mobileuserdata`
+-- Database: `mobile`
 --
 
 -- --------------------------------------------------------
@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `areas` (
-  `user` varchar(100) NOT NULL,
+  `user` varchar(25) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `latitude` double NOT NULL,
   `longitude` double NOT NULL,
@@ -48,14 +48,15 @@ CREATE TABLE IF NOT EXISTS `areas` (
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
-  `index` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `hash` varchar(100) NOT NULL,
-  `username` int(25) NOT NULL,
-  PRIMARY KEY (`index`),
+  `username` varchar(25) NOT NULL,
+  `salt` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `hash` (`hash`),
   UNIQUE KEY `username` (`username`),
-  KEY `index` (`index`),
-  KEY `index_2` (`index`)
+  KEY `index` (`id`),
+  KEY `index_2` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
@@ -66,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Constraints for table `areas`
 --
 ALTER TABLE `areas`
-  ADD CONSTRAINT `areas_ibfk_2` FOREIGN KEY (`user`) REFERENCES `users` (`username`);
+  ADD CONSTRAINT `areas_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`username`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
