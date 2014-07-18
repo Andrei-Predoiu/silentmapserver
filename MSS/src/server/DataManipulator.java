@@ -29,14 +29,14 @@ public class DataManipulator {
 		}
 	}
 
-	public static DataManipulator getInstance() {
+	public synchronized static DataManipulator getInstance() {
 		if (instance == null) {
 			instance = new DataManipulator();
 		}
 		return instance;
 	}
 
-	public ArrayList<Area> getAreas(String username) {
+	public synchronized ArrayList<Area> getAreas(String username) {
 		ArrayList<Area> areas = new ArrayList<Area>();
 
 		String query = "Select latitude,longitude,radius,circle_hash,silent,vibrate FROM areas where user='"
@@ -67,7 +67,7 @@ public class DataManipulator {
 		return areas;
 	}
 
-	public ArrayList<Auth> getUsers() {
+	public synchronized ArrayList<Auth> getUsers() {
 		ArrayList<Auth> users = new ArrayList<Auth>();
 
 		String query = "SELECT username,salt,hash FROM users;";
@@ -95,7 +95,7 @@ public class DataManipulator {
 		return users;
 	}
 
-	public void newUser(String username, String password) {
+	public synchronized void newUser(String username, String password) {
 		byte[] salt = sr.generateSeed(32);
 		String hash;
 		try {
@@ -128,11 +128,12 @@ public class DataManipulator {
 		}
 	}
 
-	public void newAreas(String user, Area[] areas) {
+	public synchronized void newAreas(String user, Area[] areas) {
 		int index = 0;
 		String query;
-		
-		//ToDo check if circles have hashes, update the ones that do and create a hash for ones that don't
+
+		// ToDo check if circles have hashes, update the ones that do and create
+		// a hash for ones that don't
 		try {
 			Connection con = DriverManager.getConnection(
 					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
@@ -148,7 +149,7 @@ public class DataManipulator {
 						+ ", "
 						+ areas[index].getRadius()
 						+ ", "
-						+ areas[index].getcircle_hash()
+						+ areas[index].getCircle_hash()
 						+ ", "
 						+ areas[index].getSettings().isSilent()
 						+ ", "
@@ -161,7 +162,33 @@ public class DataManipulator {
 		}
 	}
 
-	public void deleteAreas(String user) {
+	public synchronized void updateAreas(String user, Area[] areas) {
+		int index = 0;
+		String query;
+
+		// ToDo check if circles have hashes, update the ones that do and create
+		// a hash for ones that don't
+		try {
+			Connection con = DriverManager.getConnection(
+					"jdbc:mysql://localhost:3306/mobileuserdata", "root", "");
+
+			Statement st = con.createStatement();
+			for (int i = index; i < areas.length; i++) {
+				query = "UPDATE areas SET radius=" + areas[index].getRadius()
+						+ ", silent =" + areas[index].getSettings().isSilent()
+						+ ", vibrate ="
+						+ areas[index].getSettings().isVibrate()
+						+ " WHERE circle_hash ="
+						+ areas[index].getCircle_hash() + ";";
+				st.executeUpdate(query);
+				index++;
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public synchronized void deleteAreas(String user) {
 		String query = "DELETE FROM areas WHERE user ='" + user + "'";
 
 		try {
@@ -178,7 +205,7 @@ public class DataManipulator {
 		}
 	}
 
-	public boolean userExsists(String username, String password) {
+	public synchronized boolean userExsists(String username, String password) {
 		String hashGet = "SELECT hash,salt FROM users WHERE username ='"
 				+ username + "'";
 

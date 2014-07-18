@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import server.model.Area;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -125,4 +126,18 @@ public class Encription {
 		return returnString;
 	}
 
+	// Probably performance drain below
+	public String areaToHash(Area area) {
+		try {
+			return this.encode(String.valueOf(area.getLatitude()),
+					(String.valueOf(area.getLongitude())));
+		} catch (NoSuchAlgorithmException e) {
+			System.out.println("areaToHash failed NoSuchAlgorithmException");
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("areaToHash failed IOException");
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

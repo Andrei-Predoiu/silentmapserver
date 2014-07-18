@@ -27,11 +27,11 @@ public class Area {
 		this.user = user;
 	}
 
-	public String getcircle_hash() {
+	public String getCircle_hash() {
 		return circle_hash;
 	}
 
-	public void circle_hash(String circle_hash) {
+	public void setCircle_hash(String circle_hash) {
 		this.circle_hash = circle_hash;
 	}
 
