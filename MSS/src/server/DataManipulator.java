@@ -28,6 +28,11 @@ public class DataManipulator {
 			System.out.println("NoSuchAlgorithmException!!!");
 			e.printStackTrace();
 		}
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public synchronized static DataManipulator getInstance() {
@@ -110,14 +115,19 @@ public class DataManipulator {
 			e.printStackTrace();
 			return false;
 		}
-		String query = "INSERT INTO users(username,salt,hash,) VALUES ('"
-				+ username + "')";
+		String query = "INSERT INTO `mobile`.`users` (`hash`, `username`, `salt`) VALUES ('"
+				+ hash
+				+ "','"
+				+ username
+				+ "','"
+				+ enc.byteToBase64(salt)
+				+ "')";
+		System.out.println(query);
 		try {
 			Connection con = DriverManager.getConnection(databaseAdress,
 					"root", "112");
 
-			System.out.println("Created new account:\nUsername: " + username
-					+ "\nSalt: " + salt + "\nHash: " + hash);
+			System.out.println("Created new account:\nUsername: " + username);
 
 			Statement stmt = con.createStatement();
 			if (stmt.executeUpdate(query) != 0)

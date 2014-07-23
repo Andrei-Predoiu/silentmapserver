@@ -118,7 +118,7 @@ public class Encription {
 	 * @return String
 	 * @throws IOException
 	 */
-	private String byteToBase64(byte[] bt) {
+	public String byteToBase64(byte[] bt) {
 
 		BASE64Encoder endecoder = new BASE64Encoder();
 		String returnString = endecoder.encode(bt);

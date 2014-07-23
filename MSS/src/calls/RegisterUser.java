@@ -71,7 +71,7 @@ public class RegisterUser extends HttpServlet {
 			r = gson.toJson(req);
 			System.out.println(req.getHash());
 
-			if (!worker.isUsernameUnique(req.getUsername())) {
+			if (worker.isUsernameUnique(req.getUsername())) {
 				if (worker.newUser(req.getUsername(), req.getPassword())) {
 					root.put("message", "ok");
 				} else {
