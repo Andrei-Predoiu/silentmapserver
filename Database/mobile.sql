@@ -49,11 +49,10 @@ CREATE TABLE IF NOT EXISTS `areas` (
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `hash` varchar(100) NOT NULL,
   `username` varchar(25) NOT NULL,
-  `salt` varchar(32) NOT NULL,
+  `salt` varchar(100) NOT NULL,
+  `hash` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `hash` (`hash`),
   UNIQUE KEY `username` (`username`),
   KEY `index` (`id`),
   KEY `index_2` (`id`)
